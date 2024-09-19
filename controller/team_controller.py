@@ -5,7 +5,8 @@ from flask import Blueprint, request, jsonify
 from model.respone_model import ResponseDto
 from model.team_model import Team
 from repository.database import create_tables, create_table_team
-from repository.team_repository import add_team_to_database, delete_team_by_id, find_team_by_id, team_details, valdition
+from repository.team_repository import add_team_to_database, delete_team_by_id, find_team_by_id, team_details, \
+    valdition, find_all_team, update_team
 
 team_blueprint = Blueprint("team", __name__)
 
@@ -31,3 +32,25 @@ def find_by_id(team_id):
     team = find_team_by_id(team_id)
     result = team_details(team)
     return jsonify(asdict(ResponseDto(body=result))), 200
+
+
+@team_blueprint.route("/<int:team_id>", methods=['PUT'])
+def update_user_from_internet(team_id):
+    json = request.json
+    team_to_update:Team = next(filter(lambda x: x.id == team_id, find_all_team()), None)
+    if not team_to_update:
+        return jsonify(asdict(ResponseDto(message="team doesnt exists"))), 200
+
+    team_to_update.playeridpg = json["playeridpg"]
+    team_to_update.playeridsg = json["playeridsg"]
+    team_to_update.playeridc = json["playeridc"]
+    team_to_update.playeridsf = json["playeridsf"]
+    team_to_update.playeridpf = json["playeridpf"]
+    team_to_update.teamname = json["teamname"]
+
+    if not valdition(team_to_update):
+        return jsonify(asdict(ResponseDto(message="validation error"))), 200
+
+    update_team(team_to_update)
+
+    return jsonify(asdict(ResponseDto(body=team_to_update))), 200

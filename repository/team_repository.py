@@ -1,7 +1,17 @@
+from toolz import pipe
+from toolz.curried import partial
+
 from model.team_model import Team
 from repository.database import get_db_connection
 from repository.players_repository import find_player_by_playerid, find_player_position_by_playerid
 
+def find_all_team():
+    with get_db_connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT * FROM team")
+            res = cursor.fetchall()
+            teams = [Team(**f) for f in res]
+            return teams
 
 def add_team_to_database(team: Team) -> int:
     with get_db_connection() as connection:
@@ -44,10 +54,23 @@ def team_details(team:Team):
     return res
 
 def valdition(team:Team):
-    tmp_array = []
-    tmp_array.append(find_player_position_by_playerid(team.playeridc))
-    tmp_array.append(find_player_position_by_playerid(team.playeridpf))
-    tmp_array.append(find_player_position_by_playerid(team.playeridsf))
-    tmp_array.append(find_player_position_by_playerid(team.playeridsg))
-    tmp_array.append(find_player_position_by_playerid(team.playeridpg))
-    return len(set(tmp_array)) == 5
+    player_ids = [team.playeridc, team.playeridpf, team.playeridsf, team.playeridsg, team.playeridpg]
+    result = pipe(
+        player_ids,
+        partial(map,lambda x: find_player_position_by_playerid(x)),
+        list,
+        set,
+        len
+    )
+    return result == 5
+
+
+def update_team(team:Team):
+    with get_db_connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+            UPDATE team
+            SET teamname = %s, playeridpf= %s,  playeridsf= %s,  playeridc= %s,  playeridsg= %s, playeridpg= %s 
+            WHERE id = %s
+                            ''',(team.teamname, team.playeridpf, team.playeridsf, team.playeridc, team.playeridsg, team.playeridpg, team.id))
+            connection.commit()
