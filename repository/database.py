@@ -18,7 +18,10 @@ def create_tables():
                 turnovers INT,
                 season INT,      
                 games INT,
-                points INT
+                points INT,
+                twoPercent FLOAT,
+                threePercent FLOAT,
+                team VARCHAR(100)
                 )
     """)
 

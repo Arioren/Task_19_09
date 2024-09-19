@@ -20,7 +20,10 @@ def get_players_by_api(season):
                         'points': x["points"],
                         "season": x["season"],
                         "assists": x['assists'],
-                        "turnovers":x["turnovers"]}),
+                        "turnovers":x["turnovers"],
+                        "twoPercent":x["twoPercent"],
+                        "threePercent":x["threePercent"],
+                        "team":x["team"]}),
             list
         )
     except Exception as e:
