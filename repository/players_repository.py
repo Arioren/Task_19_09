@@ -124,3 +124,30 @@ def calculate_ppg(score, position):
             , (position,))
             res = cursor.fetchone()["sum"]
             return score/ res if res else 0
+
+
+def find_player_by_playerid(player_id):
+    with get_db_connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                '''
+                SELECT DISTINCT (playername)
+                FROM players
+                WHERE playerid = %s
+                '''
+            , (player_id,))
+            res = cursor.fetchone()["playername"]
+            return get_statistics(res)
+
+def find_player_position_by_playerid(player_id):
+    with get_db_connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                '''
+                SELECT position FROM public.players
+                WHERE playerid = %s
+                LIMIT 1
+                '''
+            , (player_id,))
+            res = cursor.fetchone()["position"]
+            return res

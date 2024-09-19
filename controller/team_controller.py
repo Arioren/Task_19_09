@@ -5,7 +5,7 @@ from flask import Blueprint, request, jsonify
 from model.respone_model import ResponseDto
 from model.team_model import Team
 from repository.database import create_tables, create_table_team
-from repository.team_repository import add_team_to_database
+from repository.team_repository import add_team_to_database, delete_team_by_id, find_team_by_id, team_details, valdition
 
 team_blueprint = Blueprint("team", __name__)
 
@@ -13,10 +13,21 @@ team_blueprint = Blueprint("team", __name__)
 def create_team():
     json = request.json
 
-    #From the data class settings there will be an error if not all the data is complete
     my_team = Team(**json)
-
-    #return jsonify(asdict(ResponseDto(message="validation error"))), 200
+    if not valdition(my_team):
+        return jsonify(asdict(ResponseDto(message="validation error"))), 200
     create_table_team()
-    add_team_to_database(my_team)
-    return jsonify(asdict(ResponseDto(body=my_team))), 200
+    new_id = add_team_to_database(my_team)
+    return jsonify(asdict(ResponseDto(body=new_id))), 200
+
+
+@team_blueprint.route("/delete/<int:team_id>", methods=['DELETE'])
+def delete_team(team_id):
+    delete_team_by_id(team_id)
+    return jsonify(asdict(ResponseDto(message="team deleted or never existed"))), 200
+
+@team_blueprint.route("/<int:team_id>", methods=['GET'])
+def find_by_id(team_id):
+    team = find_team_by_id(team_id)
+    result = team_details(team)
+    return jsonify(asdict(ResponseDto(body=result))), 200

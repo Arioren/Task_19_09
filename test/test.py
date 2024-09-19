@@ -16,7 +16,7 @@ def setup_database():
             yield cursor
 
 
-def test_to_create_find_all_players():
+def test_to_find_all_players():
     res = find_all_players()
     assert len(res) > 2000
 

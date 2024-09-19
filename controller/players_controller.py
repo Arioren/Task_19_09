@@ -1,5 +1,8 @@
+from dataclasses import asdict
+
 from flask import Blueprint, request, jsonify
 
+from model.respone_model import ResponseDto
 from repository.players_repository import filter_players_by_position_and_season, filter_players_by_position
 
 player_blueprint = Blueprint("player", __name__)
@@ -12,4 +15,4 @@ def search_players_by_position_and_season():
         res = filter_players_by_position_and_season(position, season)
     else:
         res = filter_players_by_position(position)
-    return jsonify(res), 200
+    return jsonify(asdict(ResponseDto(body=res))), 200
