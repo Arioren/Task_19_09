@@ -26,6 +26,20 @@ def create_tables():
     """)
 
 
+def create_table_team():
+    create_my_table(
+        '''
+        CREATE TABLE IF NOT EXISTS team(
+            id SERIAL PRIMARY KEY,
+            teamname VARCHAR(100),
+            playerid VARCHAR(100),
+            playerid VARCHAR(100),
+            playerid VARCHAR(100),
+            playerid VARCHAR(100),
+            playerid VARCHAR(100)
+        )
+        '''
+    )
 
 def create_my_table(command: str):
     with get_db_connection() as connection:
