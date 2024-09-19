@@ -1,8 +1,12 @@
 from dataclasses import dataclass
-from typing import List
 
 
 @dataclass
 class Team:
-    team_name:str
-    ids_player:List[str]
+    teamname:str
+    playeridc:str
+    playeridpf:str
+    playeridsf:str
+    playeridsg:str
+    playeridpg:str
+    id:int = None

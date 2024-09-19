@@ -32,11 +32,11 @@ def create_table_team():
         CREATE TABLE IF NOT EXISTS team(
             id SERIAL PRIMARY KEY,
             teamname VARCHAR(100),
-            playerid VARCHAR(100),
-            playerid VARCHAR(100),
-            playerid VARCHAR(100),
-            playerid VARCHAR(100),
-            playerid VARCHAR(100)
+            playeridc VARCHAR(100),
+            playeridpf VARCHAR(100),
+            playeridsf VARCHAR(100),
+            playeridsg VARCHAR(100),
+            playeridpg VARCHAR(100)
         )
         '''
     )
