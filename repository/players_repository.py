@@ -38,16 +38,16 @@ def create_player(player: Player) -> int:
                 INSERT INTO players (playerId, playerName, position, assists, turnovers, season, games, points, twoPercent, threePercent, team)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id
             """,
-                           (player.playerId,
-                            player.playerName,
+                           (player.playerid,
+                            player.playername,
                             player.position,
                             player.assists,
                             player.turnovers,
                             player.season,
                             player.games,
                             player.points,
-                            player.twoPercent,
-                            player.threePercent,
+                            player.twopercent,
+                            player.threepercent,
                             player.team))
             new_id = cursor.fetchone()['id']
             connection.commit()
@@ -75,7 +75,7 @@ def filter_players_by_position(position):
                 SELECT DISTINCT playerName FROM players
                 WHERE position = %s
                 '''
-            , (position))
+            , (position,))
             res = cursor.fetchall()
             player_names = [row["playername"] for row in res]
             return convert_res_to_the_requirements(player_names)
