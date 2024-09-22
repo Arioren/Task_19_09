@@ -17,8 +17,8 @@ def load_players_from_api():
     players_json = get_players_by_api(2024)
     players_json += get_players_by_api(2023)
     players_json += get_players_by_api(2022)
-    for f in [Player(**f) for f in players_json]:
-        create_player(f)
+
+    map(lambda x: create_player(x), [Player(**f) for f in players_json])
 
 
 
@@ -65,7 +65,7 @@ def filter_players_by_position_and_season(position, season):
             , (position, season))
             res = cursor.fetchall()
             player_names = [row["playername"] for row in res]
-            return convert_res_to_the_requirements(player_names)
+            return dict(map(lambda name: (name, get_statistics(name)), player_names))
 
 def filter_players_by_position(position):
     with get_db_connection() as connection:
@@ -78,13 +78,7 @@ def filter_players_by_position(position):
             , (position,))
             res = cursor.fetchall()
             player_names = [row["playername"] for row in res]
-            return convert_res_to_the_requirements(player_names)
-
-def convert_res_to_the_requirements(names):
-    res= {}
-    for name in names:
-        res[name] = get_statistics(name)
-    return res
+            return dict(map(lambda name: (name, get_statistics(name)), player_names))
 
 def get_statistics(name:str):
     result = {}

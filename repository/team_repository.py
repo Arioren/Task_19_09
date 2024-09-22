@@ -45,24 +45,27 @@ def find_team_by_id(team_id):
             return Team(**res) if len(res) > 0 else None
 
 def team_details(team:Team):
-    res = {"name": team.teamname, "players":[]}
-    res["players"].append(find_player_by_playerid(team.playeridc))
-    res["players"].append(find_player_by_playerid(team.playeridpf))
-    res["players"].append(find_player_by_playerid(team.playeridsf))
-    res["players"].append(find_player_by_playerid(team.playeridsg))
-    res["players"].append(find_player_by_playerid(team.playeridpg))
-    return res
+    return {
+        "name": team.teamname,
+        "players": list(map(find_player_by_playerid, [
+            team.playeridc,
+            team.playeridpf,
+            team.playeridsf,
+            team.playeridsg,
+            team.playeridpg
+        ]))
+    }
 
 def valdition(team:Team):
     player_ids = [team.playeridc, team.playeridpf, team.playeridsf, team.playeridsg, team.playeridpg]
-    result = pipe(
+    return pipe(
         player_ids,
         partial(map,lambda x: find_player_position_by_playerid(x)),
         list,
         set,
-        len
+        len,
+        lambda x: x==5
     )
-    return result == 5
 
 
 def update_team(team:Team):
